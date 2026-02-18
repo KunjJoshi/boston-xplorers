@@ -1,5 +1,10 @@
 import { getDatabase } from "../../db/db.js";
 
+function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date);
+} 
+
 async function getNextItineraryId() {
     const db = getDatabase();
 
@@ -284,7 +289,7 @@ export async function saveItinerary({ slotData, itineraryID }) {
     }
 }
 
-export async function deleteItem({ id }) {
+export async function deleteItem(id) {
     try {
         const db = getDatabase();
         const slot = await db.collection('itinerarySlots').findOne({ slotID: id });
@@ -310,9 +315,10 @@ export async function deleteItem({ id }) {
     }
 }
 
-export async function copyItineraryToNew({ itineraryID, itineraryName, startDate }) {
+export async function copyItineraryToNew(itineraryID, itineraryName, startDate) {
     try {
         const db = getDatabase();
+        console.log('itineraryID', itineraryID);
         const sourceItinerary = await db.collection('itineraries').findOne({ itineraryID: itineraryID })
 
         if (!sourceItinerary) {
@@ -374,12 +380,16 @@ export async function copyItineraryToNew({ itineraryID, itineraryName, startDate
                 slotDate: newSlotDate,
                 slotTime: slot.slotTime,
                 cardID: slot.cardID,
+                itineraryID: tgtItineraryID
             };
             newSlots.push(updatedSlot);
 
-        })
+        });
+        let slotsInserted = []
         const inserted = await db.collection('itineraries').insertOne(itinerary);
-        const slotsInserted = await db.collection('itinerarySlots').insertMany(newSlots);
+        if (newSlots.length > 0) {
+            slotsInserted = await db.collection('itinerarySlots').insertMany(newSlots);
+        }
         
         return {
             status: 201,

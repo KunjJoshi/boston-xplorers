@@ -111,84 +111,72 @@ function generateHourSlots() {
 
 export async function getItineraryById(itineraryId) {
     const db = getDatabase();
+    
+    // Get itinerary
     const itinerary = await db.collection('itineraries').findOne({ itineraryID: itineraryId });
+    
     if (!itinerary) {
         return {
             status: 404,
-            message: 'itinerary not found'
+            message: 'Itinerary not found'
         };
     }
 
-    const slotData = [];
-    const startDate = itinerary.startDate;
-    const endDate = itinerary.endDate;
-
-    const dateRange = generateDateRange(startDate, endDate);
-    const hourlySlots = generateHourSlots();
-
-    const allItinerarySlots = await db.collection('itinerarySlots').find({itineraryID: itineraryId}).toArray();
+    // Get all filled slots for this itinerary
+    const allItinerarySlots = await db.collection('itinerarySlots')
+        .find({ itineraryID: itineraryId })
+        .sort({ slotDate: 1, slotTime: 1 }) // Sort by date, then time
+        .toArray();
+    
+    // Get unique location IDs
     const locationIDs = allItinerarySlots.map(slot => slot.cardID);
-    const uniqueLocationIDs = [... new Set(locationIDs)]
-
-    const locations = await db.collection('locations').find({ locationID: {$in: uniqueLocationIDs }}).toArray();
-
-    const slotMap = new Map();
-    allItinerarySlots.forEach( slot => {
-        const dateString = formatDateYMD(slot.slotDate);
-        const dateTimeKey = `${dateString}-${slot.slotTime}`;
-        slotMap.set(dateTimeKey, slot);
-    });
-
+    const uniqueLocationIDs = [...new Set(locationIDs)];
+    
+    // Fetch all locations at once
+    const locations = await db.collection('locations')
+        .find({ locationID: { $in: uniqueLocationIDs } })
+        .toArray();
+    
+    // Create location lookup map
     const locationMap = new Map();
-    locations.forEach( loc => {
+    locations.forEach(loc => {
         locationMap.set(loc.locationID, loc);
     });
-
-    dateRange.forEach(date => {
-        hourlySlots.forEach(slot => {
-
-            const slotKey = `${formatDateYMD(date)}-${slot}`;
-            const itinerarySlot = slotMap.get(slotKey);
-            if (itinerarySlot) {
-                const locID = itinerarySlot.cardID;
-                const loc = locationMap.get(locID);
-
-                const formattedSlot = {
-                    slotID: itinerarySlot.slotID,
-                    itineraryID: itinerary.itineraryID,
-                    location: {
-                        locationName: loc.locationName,
-                        locationDesc: loc.locationDescription,
-                        locationImage: loc.locationImage,
-                        timeToComplete: loc.timeToComplete,
-                        distToPT: loc.distanceToPublicTransport,
-                        category: loc.category,
-                        rating: loc.starRating,
-                        address: loc.address
-                    },
-                    slotDate: date,
-                    slotTime: slot
-                }
-                slotData.push(formattedSlot);
-            } else {
-                const formattedSlot = {
-                    slotID: null,
-                    itineraryID: itinerary.itineraryID,
-                    location: null,
-                    slotDate: date,
-                    slotTime: slot
-                }
-                slotData.push(formattedSlot);
+    
+    // Build slot data (only filled slots)
+    const slotData = allItinerarySlots.map(slot => {
+        const location = locationMap.get(slot.cardID);
+        
+        if (!location) {
+            console.warn(`Location ${slot.cardID} not found for slot ${slot.slotID}`);
+            return null;
+        }
+        
+        return {
+            slotID: slot.slotID,
+            slotDate: formatDateYMD(slot.slotDate),
+            slotTime: slot.slotTime,
+            location: {
+                locationID: location.locationID,
+                locationName: location.locationName,
+                locationDescription: location.locationDescription,
+                locationImage: location.locationImage,
+                timeToComplete: location.timeToComplete,
+                distanceToPublicTransport: location.distanceToPublicTransport,
+                category: location.category,
+                starRating: location.starRating,
+                address: location.address
             }
-        });
-    });
+        };
+    }).filter(slot => slot !== null); // Remove any null slots
+    
     return {
         status: 200,
         itineraryID: itinerary.itineraryID,
         itineraryName: itinerary.itineraryName,
         startDate: formatDate(itinerary.startDate),
         endDate: formatDate(itinerary.endDate),
-        slotData: slotData,
+        slotData: slotData
     };
 }
 
@@ -197,7 +185,6 @@ export async function createItinerary({ itineraryName, startDate, endDate }) {
     const nextId = await getNextItineraryId();
 
     const newItinerary = {
-        status: 201,
         itineraryID: nextId,
         itineraryName: itineraryName,
         startDate: new Date(startDate),
@@ -205,7 +192,10 @@ export async function createItinerary({ itineraryName, startDate, endDate }) {
     };
 
     await db.collection('itineraries').insertOne(newItinerary);
-    return newItinerary;
+    return {
+        status: 201,
+        itinerary: newItinerary
+    };
 }
 
 export async function deleteItinerary({ itineraryID }) {

@@ -1,25 +1,22 @@
 // locations.validation.js
 
-const ALLOWED_CATEGORIES = [
-    "park",
-    "restaurant",
-    "museum",
-    "education",
-    "miscellaneous",
-    "landmark",
-    "historic",
-    "waterfront",
-    "hiking",
-  ];
+//const ALLOWED_CATEGORIES = [
+//    "park",
+//    "restaurant",
+//    "museum",
+//    "education",
+//    "miscellaneous",
+//    "landmark",
+//    "historic",
+//    "waterfront",
+//    "hiking",
+//  ];
   
   
   function isNonEmptyString(v) {
     return typeof v === "string" && v.trim().length > 0;
   }
   
-  function isValidRating(v) {
-    return typeof v === "number" && v >= 0 && v <= 5;
-  }
   
   /**
    * Supports increments of  (e.g., 30, 60, 90)
@@ -59,12 +56,10 @@ const ALLOWED_CATEGORIES = [
   export function validateLocationCreation(req, res, next) {
     const errors = [];
     const {
-      locationID,
       locationName,
       locationDescription,
       category,
       address,
-      starRating,
       locationImage,
       neighborhood,
       timeToComplete,
@@ -72,7 +67,6 @@ const ALLOWED_CATEGORIES = [
     } = req.body;
   
     // Required fields
-    if (!isNonEmptyString(locationID)) errors.push("locationID is required and must be a non-empty string.");
     if (!isNonEmptyString(locationName)) errors.push("locationName is required and must be a non-empty string.");
     if (!isNonEmptyString(locationDescription)) errors.push("locationDescription is required and must be a non-empty string.");
     if (!isNonEmptyString(address)) errors.push("address is required and must be a non-empty string.");
@@ -80,17 +74,9 @@ const ALLOWED_CATEGORIES = [
     // Category required - must be allowed
     if (!isNonEmptyString(category)) {
       errors.push("category is required and must be a non-empty string.");
-    } else if (!ALLOWED_CATEGORIES.includes(category)) {
-      errors.push(`category must be one of: ${ALLOWED_CATEGORIES.join(", ")}.`);
     }
   
-    // Optional fields validation
-    if (starRating !== undefined) {
-      const ratingNum = typeof starRating === "string" ? Number(starRating) : starRating;
-      if (!isValidRating(ratingNum)) errors.push("starRating must be a number between 0 and 5.");
-      else req.body.starRating = ratingNum; 
-    }
-  
+    
     if (locationImage !== undefined && locationImage !== null && locationImage !== "") {
       if (!isNonEmptyString(locationImage)) errors.push("locationImage must be a non-empty string when provided.");
     }
@@ -153,12 +139,6 @@ const ALLOWED_CATEGORIES = [
       } else if (!ALLOWED_CATEGORIES.includes(body.category)) {
         errors.push(`category must be one of: ${ALLOWED_CATEGORIES.join(", ")}.`);
       }
-    }
-  
-    if ("starRating" in body) {
-      const ratingNum = typeof body.starRating === "string" ? Number(body.starRating) : body.starRating;
-      if (!isValidRating(ratingNum)) errors.push("starRating must be a number between 0 and 5.");
-      else body.starRating = ratingNum; 
     }
   
     if ("locationImage" in body && body.locationImage !== null && body.locationImage !== "") {

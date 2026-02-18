@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import { connectToDatabase } from "./src/db/db.js";
 
 import itinerariesRoutes from './src/features/itineraries/itineraries.routes.js'
+import locationRoutes from './src/features/locations/locations.routes.js'
+import categoryRoutes from './src/features/categories/categories.routes.js'
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ app.use(express.json());
 app.use(express.static('client')); // Serve static files
 
 app.use('/api/itinerary', itinerariesRoutes);
+app.use('/api/locations', locationRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

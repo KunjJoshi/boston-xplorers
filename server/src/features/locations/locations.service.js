@@ -1,5 +1,19 @@
 import { getDatabase } from "../../db/db.js";
 
+async function getNextLocationId() {
+  const db = getDatabase();
+
+  const lastItinerary = await db.collection('locations').find({}).sort({ locationID: -1 }).limit(1).toArray();
+  if (lastItinerary.length === 0) {
+      return '001' // Create first itinerary if no itineraries exist
+  }
+
+  const lastIdNumber = parseInt(lastItinerary[0].locationID, 10);
+  const incrementedId = lastIdNumber + 1;
+
+  return incrementedId.toString().padStart(3, '0');
+}
+
 function parseSort(sort, order) {
   const dir = order === "asc" ? 1 : -1;
 
@@ -114,6 +128,17 @@ export async function getLocationById(id) {
 export async function createLocation(locationData) {
   try {
     const db = getDatabase();
+    const locationID = await getNextLocationId();
+
+    locationData.locationID = locationID;
+    const category = locationData.category;
+
+    const catInDB = await db.collection('categories').findOne({ categoryName: category });
+    const categoryID = catInDB.categoryID;
+    locationData.category = categoryID;
+
+    locationData.starRating = 0;
+    locationData.numRaters = 0;
 
     await db.collection("locations").insertOne(locationData);
     return locationData;
@@ -156,6 +181,12 @@ export async function updateLocation(id, updateData) {
 export async function deleteLocation(id) {
   try {
     const db = getDatabase();
+
+    const locSlots = await db.collection('itinerarySlots').find({ cardID: id }).toArray();
+
+    if (locSlots.length > 0) {
+      return { status: 409, message: "location cant be deleted. Used in itineraries" }
+    }
 
     const result = await db.collection("locations").deleteOne({ locationID: id });
 

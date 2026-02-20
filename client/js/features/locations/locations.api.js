@@ -32,7 +32,7 @@ export async function viewLocation(id) {
 }
 export async function listCategories() {
   const res = await fetch(
-    "https://boston-xplorers-production.up.railway.app/categories/list-categories"
+    "https://boston-xplorers-production.up.railway.app/api/categories/list-categories"
   );
 
   if (!res.ok) {

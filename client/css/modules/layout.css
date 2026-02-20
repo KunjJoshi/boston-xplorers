@@ -342,3 +342,122 @@
 .sidebar-actions a.sidebar-btn:active {
   transform: translateY(0px) scale(0.99);
 }
+
+.modal-form {
+  max-width: 500px;
+  padding: 0;
+}
+
+.add-itinerary-form {
+  padding: 30px;
+}
+
+.form-description {
+  font-size: 14px;
+  color: #6C757D;
+  margin: 0 0 25px 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0C2340;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1A1A1A;
+  background: white;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #C8102E;
+}
+
+.form-input::placeholder {
+  color: #6C757D;
+}
+
+/* Override sidebar form styles when in modal */
+.add-itinerary-form .form-input,
+.add-itinerary-form input,
+.add-itinerary-form select {
+  color: #1A1A1A !important;
+  background: white !important;
+  border: 2px solid #dee2e6 !important;
+}
+
+.add-itinerary-form input::placeholder {
+  color: #6C757D !important;
+}
+
+.add-itinerary-form input:focus,
+.add-itinerary-form select:focus {
+  border-color: #C8102E !important;
+}
+
+/* Modal panel actions (buttons) */
+.add-itinerary-form .panel-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.add-itinerary-form .sidebar-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.add-itinerary-form .sidebar-btn.primary {
+  background: #C8102E;
+  color: white;
+}
+
+.add-itinerary-form .sidebar-btn.primary:hover {
+  background: #9B0C23;
+  transform: translateY(-1px);
+}
+
+.add-itinerary-form .sidebar-btn.primary:disabled {
+  background: #dee2e6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.add-itinerary-form .sidebar-btn.ghost {
+  background: transparent;
+  border: 2px solid #dee2e6;
+  color: #6C757D;
+}
+
+.add-itinerary-form .sidebar-btn.ghost:hover {
+  background: #F8F9FA;
+  border-color: #C8102E;
+  color: #C8102E;
+}
+
+/* Panel title in modal */
+.add-itinerary-form .panel-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0C2340;
+  margin: 0 0 10px 0;
+}

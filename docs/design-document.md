@@ -40,7 +40,6 @@ Wants to create her own itinerary to explore Boston at her own terms and at her 
 
 **Name:** Chris
 
-**Wants:**
 Wants to explore Boston but does not know what places to visit and does not want to dig into different sites on internet to collect places. Would prefer browsing pre-made itineraries and edit them to his own accord.
 ---
 

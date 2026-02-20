@@ -135,16 +135,6 @@ export async function showLocationModal(modalBodyEl, location) {
           full.timeToComplete ? `${full.timeToComplete} min` : "—"
         }</p>
         <p><strong>Rating:</strong> ⭐ ${full.starRating ?? "—"}</p>
-
-        <button
-          id="btn-save-to-itinerary"
-          type="button"
-          class="sidebar-btn primary btn-save"
-          disabled
-        
-        >
-         
-        </button>
       </div>
     </div>
   `;

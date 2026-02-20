@@ -7,7 +7,7 @@ export async function browseLocations({
   sort = "rating",
   order = "desc",
   page = 1,
-  limit = 20
+  limit = 20,
 } = {}) {
   const params = new URLSearchParams();
 
@@ -20,7 +20,7 @@ export async function browseLocations({
   params.set("limit", limit);
 
   console.log("browseLocations URL:", `${BASE_URL}/browse-locations?${params.toString()}`);
-  
+
   const res = await fetch(`${BASE_URL}/browse-locations?${params.toString()}`);
   if (!res.ok) throw new Error(`Failed to load locations: ${res.status}`);
   return res.json();

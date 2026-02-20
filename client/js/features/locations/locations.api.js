@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000/api/locations";
+const BASE_URL = "https://boston-xplorers-production.up.railway.app/api/locations";
 
 export async function browseLocations({
   query,
@@ -32,7 +32,7 @@ export async function viewLocation(id) {
 }
 export async function listCategories() {
   const res = await fetch(
-    "http://localhost:3000/api/categories/list-categories"
+    "https://boston-xplorers-production.up.railway.app/categories/list-categories"
   );
 
   if (!res.ok) {

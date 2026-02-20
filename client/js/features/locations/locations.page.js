@@ -1,6 +1,6 @@
 import { browseLocations, listCategories } from "./locations.api.js";
 import { renderSections, showLocationModal, openModal, closeModal } from "./locations.render.js";
-const ITINERARY_BASE_URL = "http://localhost:5000/api/itinerary";
+const ITINERARY_BASE_URL = "http://localhost:3000/api/itinerary";
 
 let idToName = {};
 let nameToId = {};
@@ -176,7 +176,7 @@ async function loadSidebarItineraries() {
       const name = extractItineraryName(it, id);
 
       const a = document.createElement("a");
-      a.href = `./itineraries.html?itineraryID=${encodeURIComponent(id)}`;
+      a.href = `./pages/itineraries.html?id=${encodeURIComponent(id)}`;
       a.textContent = name;
 
       a.addEventListener("click", async (e) => {
@@ -322,8 +322,6 @@ export function initLocationsPage() {
       const fd = new FormData(form);
       const payload = Object.fromEntries(fd.entries());
   
-      if (payload.starRating !== "") payload.starRating = Number(payload.starRating);
-      else delete payload.starRating;
   
       if (payload.timeToComplete !== "") payload.timeToComplete = Number(payload.timeToComplete);
       else delete payload.timeToComplete;

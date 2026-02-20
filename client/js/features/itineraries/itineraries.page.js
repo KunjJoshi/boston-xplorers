@@ -287,6 +287,32 @@ function setupEventListeners() {
             }
         });
     });
+
+    let searchTimeout;
+    locationSearchEl.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.trim();
+        
+        // Clear previous timeout
+        clearTimeout(searchTimeout);
+        
+        // Set new timeout - API call after 500ms of no typing
+        searchTimeout = setTimeout(async () => {
+            console.log('🔍 Searching for:', searchTerm);
+            
+            try {
+                render.showLoading(locationsListEl, 'Searching...');
+                const locations = await api.fetchLocations(searchTerm);
+                console.log(`✅ Found ${locations.length} locations`);
+                render.renderLocationCards(locations, locationsListEl);
+                
+                // Re-initialize drag and drop for new cards
+                initDragAndDrop(locationsListEl, timelineEl, handleDrop);
+            } catch (error) {
+                render.showError(locationsListEl, 'Search failed');
+                console.error('Error searching locations:', error);
+            }
+        }, 500); // 500ms debounce
+    });
     
     window.addEventListener('showLocationDetail', async (e) => {
         try {

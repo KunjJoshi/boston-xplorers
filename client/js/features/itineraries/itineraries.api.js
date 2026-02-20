@@ -1,11 +1,15 @@
 const API_BASE = 'http://localhost:3000/api';
 
 /**
- * Fetch all locations
+ * Fetch all locations with optional search query
  */
-export async function fetchLocations() {
+export async function fetchLocations(query = '') {
     try {
-        const response = await fetch(`${API_BASE}/locations/browse-locations`);
+        const url = query 
+            ? `${API_BASE}/locations/browse-locations?query=${encodeURIComponent(query)}`
+            : `${API_BASE}/locations/browse-locations`;
+        
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch locations');
         return await response.json();
     } catch (error) {

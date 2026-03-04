@@ -1,5 +1,14 @@
+<!-- Typo in stylesheet link: imputs.css should be inputs.css
+<form id="add-form"> is missing action attribute — may cause unexpected page reloads on submit
+"Add Location" should open as a modal for consistency with "Add Itinerary"
+Missing meta tags: description, og:title, og:image, and favicon
+Filter toggle button needs aria-expanded attribute to toggle on open/close
+close buttons need aria-label="Close" for screen readers
+Add a <noscript> tag since the entire UI depends on JavaScript
+Empty state UI missing for #locations-sections — show a message or skeleton when no data loads -->
+
 <!doctype html>
-<html lang="en">
+<html lang="en"> 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

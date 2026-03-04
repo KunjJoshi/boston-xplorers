@@ -1,3 +1,12 @@
+<!-- "February 12th 2026" is hardcoded in <h3 id="current-date"> — should be set dynamically by JS
+itinerary-name input has readonly hardcoded in HTML — should be toggled via JS instead
+Back button uses onclick="window.location.href = '../index.html'" — replace with an <a> tag
+window.handleCopyClick() is a global function — wire it through an event listener in the JS module instead
+../ relative CSS paths are inconsistent with / absolute paths used in index.html — standardize to absolute paths
+No branding/header on this page — users lose context of what app they're in
+Missing <noscript> fallback tag
+Page <title> should dynamically update to include the itinerary name once loaded -->
+
 <!doctype html>
 <html lang="en">
   <head>
